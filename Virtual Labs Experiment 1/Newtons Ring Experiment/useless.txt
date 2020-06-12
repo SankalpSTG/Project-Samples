@@ -1,0 +1,37 @@
+
+			//Creating Images Layout
+			var imageArray = [];
+			imageArray.push({name:"concave_lens_front_cr.png", view:"front", type:"concave_lens"});
+			imageArray.push({name:"concave_lens_side_cr.png", view:"side", type:"concave_lens"});
+			imageArray.push({name:"monochromatic_light_source_bottom_cr.png", view:"bottom", type:"monochromatic_light_source"});
+			imageArray.push({name:"monochromatic_light_source_side_cr.png", view:"side", type:"monochromatic_light_source"});
+			imageArray.push({name:"monochromatic_light_source_top_cr.png", view:"top", type:"monochromatic_light_source"});
+			imageArray.push({name:"mscope_bench_bottom_cr.png", view:"bottom", type:"mscope_bench"});
+			imageArray.push({name:"mscope_bench_front_cr.png", view:"front", type:"mscope_bench"});
+			imageArray.push({name:"mscope_bench_lside_cr.png", view:"left_side", type:"mscope_bench"});
+			imageArray.push({name:"mscope_bench_rside_cr.png", view:"right_side", type:"mscope_bench"});
+			imageArray.push({name:"mscope_bench_top_cr.png", view:"top", type:"mscope_bench"});
+			imageArray.push({name:"mscope_holder_bottom_cr.png", view:"bottom", type:"mscope_holder"});
+			imageArray.push({name:"mscope_holder_front_cr.png", view:"front", type:"mscope_holder"});
+			imageArray.push({name:"mscope_holder_side_cr.png", view:"side", type:"mscope_holder"});
+			imageArray.push({name:"mscope_holder_top_cr.png", view:"top", type:"mscope_holder"});
+			imageArray.push({name:"mscope_lens_bottom_cr.png", view:"bottom", type:"mscope_lens"});
+			imageArray.push({name:"mscope_lens_side_cr.png", view:"side", type:"mscope_lens"});
+			imageArray.push({name:"mscope_lens_top_cr.png", view:"top", type:"mscope_lens"});
+			imageArray.push({name:"planoconvex_lens_bottom_cr.png", view:"bottom", type:"planoconvex_lens"});
+			imageArray.push({name:"planoconvex_lens_side_cr.png", view:"side", type:"planoconvex_lens"});
+			imageArray.push({name:"planoconvex_lens_top_cr.png", view:"top", type:"planoconvex_lens"});
+			imageArray.push({name:"round_glass_front_cr.png", view:"front", type:"round_glass"});
+			imageArray.push({name:"round_glass_side_cr.png", view:"side", type:"round_glass"});
+			imageArray.push({name:"square_glass_side_0_cr.png", view:"side", type:"square_glass"});
+			imageArray.push({name:"square_glass_side_45_cr.png", view:"side_45", type:"square_glass"});
+			imageArray.push({name:"square_glass_side_front_cr.png", view:"front", type:"square_glass"});
+			imageArray.push({name:"travelling_microscope_3d_cr.png", view:"3d", type:"travelling_microscope"});
+			imageArray.push({name:"travelling_microscope_back_cr.png", view:"back", type:"travelling_microscope"});
+			imageArray.push({name:"travelling_microscope_bottom_cr.png", view:"bottom", type:"travelling_microscope"});
+			imageArray.push({name:"travelling_microscope_front_cr.png", view:"front", type:"travelling_microscope"});
+			imageArray.push({name:"travelling_microscope_lside_cr.png", view:"left_side", type:"travelling_microscope"});
+			imageArray.push({name:"travelling_microscope_rside_cr.png", view:"right_side", type:"travelling_microscope"});
+			imageArray.push({name:"travelling_microscope_top_cr.png", view:"top", type:"travelling_microscope"});
+			document.body.style.backgroundImage = "url(images/cropped/" + imageArray[1].name   + ");";
+			alert("url(images/cropped/" + imageArray[1].name   + ");");

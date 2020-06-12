@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+		<title>Untitled 1</title>
+		<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
+		<script src="scripts/circlewithevent.js"></script>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>
+					<canvas id="sim_can_1" width="400px" height="400px" style="border:1px solid;" onclick="manageclick(event);">
+				</td>
+				<td>
+					<canvas id="sim_can_2" width="600px" height="400px" style="border:1px solid;" onclick="manageclick2(event);">
+				</td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td colspan="2" align="center">
+					<canvas id="sim_can_3" width="800px" height="100px" style="border:1px solid;" onclick="manageclick(event);">
+				</td>
+				<td align="center">
+					<b>Vernier Reading</b><br><input id="digital_vernier" type="text" placeholder="Vernier Reading" readonly /><br>
+					<b>Main Scale</b><br><input id="digital_main_scale" type="text" placeholder="Main Scale" readonly /><br>
+					<button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#aaa; font-weight:bold;color:black; font-size:16px;"  onclick="addtotable()">Add to Table</button>
+				</td>
+			</tr>
+		</table>
+		<table border="1ps solid" width="1000px">
+			<tr>
+				<td colspan="5" align="center"><button style="width:800px;height:35px;border-radius:5px 5px 5px 5px; background:#0000ff; font-weight:bold;color:white; font-size:18px;"  onclick="showapparatus()">Show Travelling Microscope</button></td>
+			</tr>	
+			<tr>
+				<td align="center" colspan="2" align="center"><b>Microscope Movement</b></td>
+				<td align="center" colspan="2" align="center"><b>Lens Movement</b></td>
+			</tr>
+			<tr>
+				<td align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#00ff00; font-weight:bold;color:black; font-size:16px;"  onclick="goleft()">Left</button></td>
+				<td align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#00ff00; font-weight:bold;color:black; font-size:16px;"  onclick="goright()">Right</button></td>
+				<td align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#ff0000; font-weight:bold;color:white; font-size:16px;"  onclick="goup()">Up</button></td>
+				<td align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#ff0000; font-weight:bold;color:white; font-size:16px;"  onclick="godown()">Down</button></td>
+			</tr>
+			<tr>
+				<td colspan="4" align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#aaa; font-weight:bold;color:black; font-size:16px;"  onclick="goleft()">Add to Table</button></td>
+			</tr>
+		</table>
+		<img id="mscope_lens_top" src="images/resized/mscope_lens_top_400x400.png" style="display:none">
+		<img id="black_stage" src="images/resized/blackstage.png" style="display:none">
+		<img id="mscope_bench" src="images/resized/bench_600x400.png" style="display:none">
+		<img id="mscope_holder" src="images/resized/holder_600x400.png" style="display:none">
+		<img id="mscope_lens" src="images/resized/lens_600x400.png" style="display:none">
+		<img id="monochromatic_source" src="images/resized/monochromatic_light_source_side_cr.png" style="display:none">
+		<img id="scale" src="images/resized/mainscale.png" style="display:none">
+		<img id="vernier" src="images/resized/vernier.png" style="display:none">
+		<script>
+			var air_diameters = [0.222, 0.248, 0.330, 0.350, 0.395, 0.410, 0.452, 0.453, 0.501];
+			var air_lmsr = [10.05, 10.1, 10.1, 10.15, 10.15, 10.2, 10.25, 10.25, 10.3];
+			var air_rmsr = [9.85, 9.85, 9.8, 9.8, 9.8, 9.8, 9.8, 9.75, 9.75];
+			var air_lvsr = [48, 1, 48, 0, 48, 44, 46, 7, 0];
+			var air_rvsr = [10, 2, 1, 0, 3, 37, 39, 48, 49];
+			var num_air = 9;
+			var multiplier = 150;
+			var tolerance = 1;
+			var water_diameters = [2, 4, 6, 8, 10];
+			var water_diameters = [2, 4, 6, 8, 10];
+			var water_diameters = [2, 4, 6, 8, 10];
+			var num_water = 5;
+			var ring_center_x_default = 203;
+			var ring_center_x = 203;
+			var ring_center_y_default = 199;
+			var ring_center_y = 199;
+			var lens_def_x = 0;
+			var lens_def_y = 0;
+			var holder_def_x = 0;
+			var holder_def_y = 0;
+			var bench_def_x = 0;
+			var bench_def_y = 0;
+			var canvastop = document.getElementById("sim_can_1");
+			var canvasmain = document.getElementById("sim_can_2");
+			var canvasscale = document.getElementById("sim_can_3");
+			var contexttop = canvastop.getContext("2d");
+			var contextmain = canvasmain.getContext("2d");
+			var contextscale = canvasscale.getContext("2d");
+			function getUrlVars() {
+				var vars = {};
+				var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+					vars[key] = value;
+				});
+				return vars;
+			}
+			function ringfunction(){
+				var contexttopsub = canvastop.getContext("2d");
+				var medium = getUrlVars()["medium"];
+				if(medium == 1){
+					for(i = 0; i < num_air; i++){
+						var radius = air_diameters[i] * multiplier;						
+						contexttopsub.beginPath();
+						contexttopsub.arc(ring_center_x, ring_center_y, radius, 0, 2 * Math.PI, true);
+						contexttopsub.strokeStyle = "yellow";
+						contexttopsub.lineWidth = 4 - i/3;
+						contexttopsub.stroke();
+					}
+				}else if(medium == 2){
+					contexttopsub.beginPath();
+					contexttopsub.arc(ring_center_x, ring_center_y, 5, 0, 2 * Math.PI, true);
+					contexttopsub.lineWidth = 4;
+					contexttopsub.stroke();
+					
+				}
+			}
+			function addtoscales(){
+				for(i = 0; i < num_air; i++){
+					var shift = ring_center_x_default - ring_center_x;
+					if(shift < 0){		
+						shift = shift*-1;
+						if(air_diameters[i]*multiplier + tolerance > shift && air_diameters[i]*multiplier - tolerance < shift){
+							document.getElementById("digital_vernier").value = air_rvsr[i];
+							document.getElementById("digital_main_scale").value = air_rmsr[i];
+						}
+					}else{						
+						if(air_diameters[i]*multiplier + tolerance > shift && air_diameters[i]*multiplier - tolerance < shift){
+							document.getElementById("digital_vernier").value = air_lvsr[i];
+							document.getElementById("digital_main_scale").value = air_lmsr[i];
+						}
+					}
+				}
+			}
+			function showapparatus(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				var contextscalesub = canvasscale.getContext("2d");
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				contextscalesub.clearRect(0, 0, canvasscale.width, canvasscale.height);
+				contexttopsub.drawImage(document.getElementById("black_stage"), 0, 0);
+				ringfunction();
+				contexttopsub.drawImage(document.getElementById("mscope_lens_top"), 0, 0);
+				contextmainsub.drawImage(document.getElementById("mscope_lens"), lens_def_x, lens_def_y);
+				contextmainsub.drawImage(document.getElementById("mscope_holder"), holder_def_x, holder_def_y);
+				contextmainsub.drawImage(document.getElementById("mscope_bench"), bench_def_x, bench_def_y);
+				showscale();
+				document.getElementById("digital_vernier").value = 0;
+				document.getElementById("digital_main_scale").value = 10;
+			}
+			function showscale(){
+				var contextscalesub = canvasscale.getContext("2d");
+				contextscalesub.drawImage(document.getElementById("scale"), 100, 0);
+				contextscalesub.drawImage(document.getElementById("vernier"), 100, 50);
+				var Q = "Main Scale";
+				contextscalesub.font = "20px Arial";
+				contextscalesub.fillText(Q, 0, 25);
+			}
+			function goleft(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				ring_center_x += 2;
+				lens_def_x += 1;
+				holder_def_x += 1;
+				showapparatus();
+				addtoscales();
+			}
+			function goright(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				ring_center_x -= 2;
+				lens_def_x -= 1;
+				holder_def_x -= 1;
+				showapparatus();
+				addtoscales();
+			}
+			function goup(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				if(lens_def_y > -35){
+					lens_def_y -= 5;
+					multiplier -= 1;
+					//tolerance -= 1;
+				}else{
+					alert("Lens cannot be further moved up");
+				}
+				showapparatus();
+			}
+			function godown(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				if(lens_def_y < 30){
+					lens_def_y += 5;
+					multiplier += 1;
+					//tolerance += 1;
+				}else{
+					alert("Lens cannot be further moved down");
+				}
+				showapparatus();
+			}
+		</script>
+	</body>
+</html>

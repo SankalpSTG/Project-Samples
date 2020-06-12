@@ -1,0 +1,196 @@
+hr { 
+    display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: inset;
+    border-width: 1px;
+}
+#c-header{
+	position:relative;
+	z-index:100;
+	height:150px;
+	transition:0.2s;
+	border-bottom:3px;
+	border-bottom-style:inset;
+	border-bottom-color:#ddd;
+	width:100%;
+	background-color:#fff;
+}
+#blank_screen{
+	background-color:#fff;
+	position:fixed;
+	width:100%;
+	height:100%;
+	z-index:101;
+}
+#c-sub-head{
+	position:relative;
+	width:100%;
+	height:18px;
+	transition:0.5s;
+	background-color:#eee;
+	color:#ccc;
+	font-size:12px;
+}
+#c-container{
+	position:relative;
+	text-align:center;
+	margin:0 auto;
+	overflow:hidden;
+}
+#c-description{
+	position:relative;
+	width:100%;
+	margin:0 auto;
+	padding:25px;
+	background-color:rgba(136, 0, 20, 0.7);/*
+	background-image:url("img1.jpg");0
+	background-size:100% 100%;*/
+}
+#description-full{
+	/*background-color:rgba(130, 200, 50, 1);*/
+	background-image:url("../../resources/images/general/fanuc1.jpg");
+	background-size:100% 100%;
+	background-attachment:fixed;
+	background-repeat:no-repeat;
+}
+#c-desc-main{
+	min-height:250px;
+}
+#c-desc-image{
+	position:relative;
+	text-align:center;
+	margin: 0 auto;
+	width:18vw;
+	height:15vw;
+	border-radius:10px;
+}
+#c-desc-slogan{
+	color:white;
+}
+#products-info{
+	position:relative;
+	padding:5px;
+	padding-top:25px;
+	padding-bottom:25px;
+	background-color:#fff
+}
+.product-full{
+	position:relative;
+	text-align:center;
+	height:400px;
+	background-color:rgba(230, 230, 230, 0.5);
+	color:white;
+	color:#737373;
+	margin:5px;
+	border-radius:10px;
+	overflow:hidden;
+}
+.product-image-div{
+	position:relative;
+	text-align:center;
+	margin:0 auto;
+	width:75%;
+	height:30vh;
+	overflow:hidden;
+}
+footer{
+	position:relative;
+	margin:0 auto;
+	border-top:1px;
+	border-top-style:inset;
+	border-top-color:#ddd;
+	width:100%;
+	height:30px;
+	color:#880014;
+	background-color:#f9f9f9;
+	overflow:hidden;
+	z-index:10;
+}
+#c-copyright{
+	position:relative;
+	text-align:center;
+	bottom:0px;
+	margin:0 auto;
+	text-decoration:none;
+}
+#hidden_menu{
+	position:fixed;
+	text-align:center;
+	width:100px;
+	display:none;
+	z-index:102;
+	top:50px;
+}
+.hlist-item{
+	padding:10px;
+	color:#999;
+	transition:0.2s;
+}
+#slideshow{
+	width:100%;
+	height:500px;
+	overflow:hidden;
+}
+#about-us{
+	position:relative;
+	text-align:center;
+	padding-top:30px;
+	padding-bottom:30px;
+	background-color:#eee;
+	color:#777;
+}
+#customer-marquee{
+	padding-top:10px;
+}
+#customers-info{
+	background-color:#880014;
+	color:white;
+	padding-bottom:10px;
+}
+#solutions-info{
+	height:500px;
+	background-color:#ddd;
+	padding:30px;
+}
+.hl-tit{
+	padding:5px;
+	font-size:20px;
+}
+.slides{
+	position:relative;
+	width:100%;
+	height:100%;
+}
+.slide-content{
+	position:relative;
+	width:100%;
+	height:100%;
+}
+.slide-text{
+	color:white;
+	padding:50px;
+	font-size:2.5vw;
+}
+.slide-logo{
+	padding:50px;
+}
+.active{
+	background-color:#696969;
+}
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: #737373; 
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #aaaaaa; 
+}

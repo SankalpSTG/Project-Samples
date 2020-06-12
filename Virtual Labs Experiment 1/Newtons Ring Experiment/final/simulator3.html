@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+		<title>Untitled 1</title>
+		<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
+		<script src="scripts/circlewithevent.js"></script>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td colspan="10"><canvas id="sim_can_1" width="600px" height="500px" style="border:1px solid;" onclick="manageclick(event);"></td>
+			</tr>
+			<tr>
+				<td align="center">Apparatus</td>
+				<td align="center">Light Switch</td>
+				<td colspan="2" align="center">
+					Microscope Controls
+				</td>
+				<td colspan="2" align="center">
+					Lens Controls
+				</td>
+			</tr>
+			<tr>
+				<td align="center"><button style="width:80px;" onclick="showapparatus()">Show</button></td>
+				<td align="center"><button style="width:80px;" onclick="switchlight()">Switch</button></td>
+				<td align="center"><button style="width:80px;" onclick="goleft()">Left</button></td>
+				<td align="center"><button style="width:80px;" onclick="goright()">Right</button></td>
+				<td align="center"><button style="width:80px;" onclick="goup()">Up</button></td>
+				<td align="center"><button style="width:80px;" onclick="godown()">Down</button></td>
+			</tr>
+				<td colspan="6" align="center"><button style="width:80px;" onclick="nextview()">Next</button></td>
+			</tr>
+		</table>
+		<img id="top_lens" src="images/resized/long_lens.png" style="display:none" >
+		<img id="yellow_rings" src="images/resized/yellow_rings_off.png" style="display:none" >
+		<img id="square_glass" src="images/resized/square_glass_side_45_cr.png" style="display:none" >
+		<img id="circular_glass" src="images/resized/round_glass_side_cr.png" style="display:none">
+		<img id="planoconvex_lens" src="images/resized/planoconvex_lens_side_cr.png" style="display:none">
+		<img id="convex_lens" src="images/resized/concave_lens_side_cr.png" style="display:none">
+		<img id="mscope_holder" src="images/resized/mscope_holder_front_cr.png" style="display:none">
+		<img id="mscope_holder_front" src="images/resized/mscope_holder_front_cr_only.png" style="display:none">
+		<img id="mscope_lens" src="images/resized/mscope_lens_side_cr.png" style="display:none">
+		<img id="mscope_bench" src="images/resized/mscope_bench_front_cr.png" style="display:none">
+		<img id="monochromatic_source" src="images/resized/monochromatic_light_source_side_cr.png" style="display:none">
+		
+		<script>
+			var switchstate = 0;
+			var level = 1;
+			var holder_def_x = 300;
+			var holder_front_def_x = 300;
+			var lens_def_x = 300;
+			var holder_def_y = 50;
+			var holder_front_def_y = 50;
+			var lens_def_y = 25;
+			var rings_def_x = 490;
+			var lvl_1_error = 0;
+			var circlecontainer = [];
+			//Creating Canvas:
+			var canvas = document.getElementById("sim_can_1");
+			//Storing 2d context into variable
+			var contextmain = canvas.getContext("2d");
+			init_level_1();
+			function showapparatus(){
+				init_level_1();
+				init_level_1_again();
+			}
+			function init_level_1(){
+				var context = canvas.getContext("2d");
+				context.font = "20px Arial";
+				var Q = "Newton's Rings Expt.";
+				context.fillText(Q, 10, 25);
+				document.getElementById("top_lens").onload = function(){
+					context.drawImage(document.getElementById("yellow_rings"), rings_def_x, 5);
+					context.drawImage(document.getElementById("top_lens"), 200, 0);
+				}
+				document.getElementById("monochromatic_source").onload = function(){
+					context.drawImage(document.getElementById("monochromatic_source"), 0, 250);
+				}
+				document.getElementById("convex_lens").onload = function(){
+					context.drawImage(document.getElementById("convex_lens"), 100, 250);
+				}
+				var context = canvas.getContext("2d");
+				document.getElementById("square_glass").onload = function(){
+					context.drawImage(document.getElementById("square_glass"), 275, 250);
+				}
+				document.getElementById("planoconvex_lens").onload = function(){
+					context.drawImage(document.getElementById("planoconvex_lens"), 250, 400);
+				}
+				document.getElementById("circular_glass").onload = function(){
+					context.drawImage(document.getElementById("circular_glass"), 250, 425);
+				}
+				document.getElementById("mscope_bench").onload = function(){
+					context.drawImage(document.getElementById("mscope_bench"), 175, 100);
+					context.drawImage(document.getElementById("mscope_holder"), holder_def_x, holder_def_y);
+					context.drawImage(document.getElementById("mscope_lens"), lens_def_x, lens_def_y);
+					context.drawImage(document.getElementById("mscope_holder_front"), holder_front_def_x, holder_front_def_y);
+				}
+			}
+			function init_level_1_again(){
+				var context = canvas.getContext("2d");
+				context.font = "20px Arial";
+				var Q = "Newton's Rings Expt.";
+				context.fillText(Q, 10, 25);
+				context.drawImage(document.getElementById("yellow_rings"), rings_def_x, 5);
+				context.drawImage(document.getElementById("top_lens"), 200, 0);
+				context.drawImage(document.getElementById("monochromatic_source"), 0, 250);
+				context.drawImage(document.getElementById("convex_lens"), 100, 250);
+				var context = canvas.getContext("2d");
+				context.drawImage(document.getElementById("square_glass"), 275, 250);
+				context.drawImage(document.getElementById("circular_glass"), 250, 425);
+				context.drawImage(document.getElementById("planoconvex_lens"), 250, 400);
+				context.drawImage(document.getElementById("mscope_bench"), 175, 100);
+				context.drawImage(document.getElementById("mscope_holder"), holder_def_x, holder_def_y);
+				context.drawImage(document.getElementById("mscope_lens"), lens_def_x, lens_def_y);
+				context.drawImage(document.getElementById("mscope_holder_front"), holder_front_def_x, holder_front_def_y);
+			}
+			function goright(){
+				holder_def_x += 1;
+				holder_front_def_x += 1;
+				lens_def_x += 1;
+				rings_def_x += 1;
+				contextmain.clearRect(0, 0, canvas.width, canvas.height);
+				init_level_1_again();
+			}
+			function goleft(){
+				holder_def_x -= 1;
+				holder_front_def_x -= 1;
+				lens_def_x -= 1;
+				rings_def_x -= 1;
+				contextmain.clearRect(0, 0, canvas.width, canvas.height);
+				init_level_1_again();
+			}
+			function godown(){
+				lens_def_y += 1;
+				contextmain.clearRect(0, 0, canvas.width, canvas.height);
+				init_level_1_again();
+			}
+			function goup(){
+				lens_def_y -= 1;
+				contextmain.clearRect(0, 0, canvas.width, canvas.height);
+				init_level_1_again();
+			}
+			function switchlight(){
+				if(switchstate == 0){
+					switchstate = 1;
+					changepaths();
+				}else{
+					switchstate = 0;
+					changepaths();
+				}
+			}
+			function changepaths(){
+				if(switchstate == 0){
+					document.getElementById("yellow_rings").src = "images/resized/yellow_rings_off.png";
+					document.getElementById("square_glass").src = "images/resized/square_glass_side_45_cr.png";
+					document.getElementById("circular_glass").src = "images/resized/round_glass_side_cr.png";
+					document.getElementById("planoconvex_lens").src = "images/resized/planoconvex_lens_side_cr.png";
+					document.getElementById("convex_lens").src = "images/resized/concave_lens_side_cr.png";
+					document.getElementById("monochromatic_source").src = "images/resized/monochromatic_light_source_side_cr.png";
+					contextmain.clearRect(0, 0, canvas.width, canvas.height);
+					var x = 1;
+					var y = null; // To keep under proper scope
+
+					setTimeout(function() {
+						x = x * 3 + 2;
+						y = x / 2;
+					}, 1000);
+					
+					init_level_1();
+					init_level_1_again();
+				}else{
+					document.getElementById("yellow_rings").src = "images/resized/yellow_rings.png";
+					document.getElementById("square_glass").src = "images/resized/square_glass_side_45_cr_on.png";
+					document.getElementById("circular_glass").src = "images/resized/round_glass_side_cr_on.png";
+					document.getElementById("planoconvex_lens").src = "images/resized/planoconvex_lens_side_cr_on.png";
+					document.getElementById("convex_lens").src = "images/resized/concave_lens_side_cr_on.png";
+					document.getElementById("monochromatic_source").src = "images/resized/monochromatic_light_source_side_cr2.png";
+					document.getElementById("yellow_rings").onload = function(){
+						contextmain.clearRect(0, 0, canvas.width, canvas.height);
+						var x = 1;
+						var y = null; // To keep under proper scope
+
+						setTimeout(function() {
+							x = x * 3 + 2;
+							y = x / 2;
+						}, 1000);
+						
+						init_level_1();
+						init_level_1_again();
+						startanim();
+					}
+				}
+			}
+			function startanim(){
+				contextmain
+			}
+			function getUrlVars() {
+				var vars = {};
+				var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+					vars[key] = value;
+				});
+				return vars;
+			}
+			function nextview(){
+				var number = getUrlVars()["medium"];
+				window.location = "simulator4.html?medium=" + number;
+			}
+			/*
+			
+		<img id="top_lens" src="images/resized/long_lens.png" style="display:none" >
+		<img id="yellow_rings" src="images/resized/yellow_rings.png" style="display:none" >
+		<img id="square_glass" src="images/resized/square_glass_side_45_cr.png" style="display:none" >
+		<img id="circular_glass" src="images/resized/round_glass_side_cr.png" style="display:none">
+		<img id="planoconvex_lens" src="images/resized/planoconvex_lens_side_cr.png" style="display:none">
+		<img id="convex_lens" src="images/resized/concave_lens_side_cr.png" style="display:none">
+		<img id="mscope_holder" src="images/resized/mscope_holder_front_cr.png" style="display:none">
+		<img id="mscope_holder_front" src="images/resized/mscope_holder_front_cr_only.png" style="display:none">
+		<img id="mscope_lens" src="images/resized/mscope_lens_side_cr.png" style="display:none">
+		<img id="mscope_bench" src="images/resized/mscope_bench_front_cr.png" style="display:none">
+		<img id="monochromatic_source" src="images/resized/monochromatic_light_source_side_cr2.png" style="display:none">
+			*/
+			//document.body.style.background = "url(images/cropped/concave_lens_front_cr.png)"
+		</script>
+	</body>
+</html>

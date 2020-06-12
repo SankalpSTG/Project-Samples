@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+		<title>Untitled 1</title>
+		<script src="https://unpkg.com/konva@2.4.2/konva.min.js"></script>
+		<script src="scripts/circlewithevent.js"></script>
+	</head>
+	<body>
+		<img id="planoconcave_lvl1" src="images/resized/planoconcave_border.png" style="display:none" width="50px">
+		<img id="planoconvex_lvl1" src="images/resized/planoconvex_border.png" style="display:none" width="50px">
+		<img id="concave_lvl1" src="images/resized/concave_border.png" style="display:none" width="50px">
+		<img id="convex_lvl1" src="images/resized/convex_border.png" style="display:none" width="50px">
+		<canvas id="sim_can_1" width="600px" height="500px" style="border:1px solid;" onclick="manageclick(event);">
+		<script>
+			var level = 1;
+			var lvl_1_error = 0;
+			var circlecontainer = [];
+			//Creating Canvas:
+			var canvas = document.getElementById("sim_can_1");
+			//Storing 2d context into variable
+			var contextmain = canvas.getContext("2d");
+			init_level_1();
+			function init_level_1(){
+				var context = canvas.getContext("2d");
+				context.font = "20px Arial";
+				var Q = "Q. Select convex lens from the given lenses";
+				context.fillText(Q, 10, 25);
+				document.getElementById("planoconcave_lvl1").onload = function(){
+					context.drawImage(document.getElementById("planoconcave_lvl1"), 50, 50);
+				}
+				document.getElementById("convex_lvl1").onload = function(){
+					context.drawImage(document.getElementById("convex_lvl1"), 150, 50);
+				}
+				var context = canvas.getContext("2d");
+				document.getElementById("planoconvex_lvl1").onload = function(){
+					context.drawImage(document.getElementById("planoconvex_lvl1"), 250, 50);
+				}
+				document.getElementById("concave_lvl1").onload = function(){
+					context.drawImage(document.getElementById("concave_lvl1"), 350, 50);
+				}
+			}
+			function init_level_2(){
+				var context = canvas.getContext("2d");
+				context.font = "20px Arial";
+				var Q = "Q. Select the medium to use";
+				context.fillText(Q, 10, 200);
+				context.beginPath();
+				context.arc(50, 250, 5, 0, 2 * Math.PI);
+				context.lineWidth = 4;
+				context.stroke();
+				Q = "Water";
+				context.fillText(Q, 100, 250);
+
+				context.beginPath();
+				context.arc(300, 250, 5, 0, 2 * Math.PI);
+				context.lineWidth = 4;
+				context.stroke();
+				Q = "Kerosene";
+				context.fillText(Q, 350, 250);
+                circlecontainer.push({ circle: a, x: x, y: y });
+			}
+			function manageclick(event){
+				var context = canvas.getContext("2d");
+				if(level == 1){
+					if((150 <= event.clientX && 230 >= event.clientX) && (50 <= event.clientY && 130 >= event.clientY)){
+						context.clearRect(0, 140, canvas.width, canvas.height);
+						var response = "Correct";
+						level += 1;
+						context.fillText(response, 10, 160);
+						lvl_1_error = 0;
+						init_level_2();
+					}else if((50 <= event.clientX && 130 >= event.clientX) && (50 <= event.clientY && 130 >= event.clientY)){
+						lvl_1_error += 1;
+						var response;
+						if(lvl_1_error >= 2){
+							var response = "Too many wrong answers";
+						}else{
+							var response = "Incorrect";
+						}
+						context.clearRect(0, 140, canvas.width, canvas.height);						
+						context.fillText(response, 10, 160);
+						
+					}else if((250 <= event.clientX && 330 >= event.clientX) && (50 <= event.clientY && 130 >= event.clientY)){
+						context.clearRect(0, 140, canvas.width, canvas.height);
+						var response;
+						if(lvl_1_error >= 2){
+							var response = "Too many wrong answers";
+						}else{
+							var response = "Incorrect";
+						}context.fillText(response, 10, 160);
+						lvl_1_error += 1;
+					}else if((350 <= event.clientX && 430 >= event.clientX) && (50 <= event.clientY && 130 >= event.clientY)){
+						context.clearRect(0, 140, canvas.width, canvas.height);
+						var response;
+						if(lvl_1_error >= 2){
+							var response = "Too many wrong answers";
+						}else{
+							var response = "Incorrect";
+						}context.fillText(response, 10, 160);
+						lvl_1_error += 1;
+					}
+				}else if(level == 2){
+					if((45 <= event.clientX && 65 >= event.clientX) && (245 <= event.clientY && 365 >= event.clientY)){
+						window.location = "simulator3.html?medium=1";
+					}else if((295 <= event.clientX && 315 >= event.clientX) && (245 <= event.clientY && 265 >= event.clientY)){
+						window.location = "simulator3.html?medium=2";
+					}
+				}
+			}
+			//document.body.style.background = "url(images/cropped/concave_lens_front_cr.png)"
+		</script>
+	</body>
+</html>

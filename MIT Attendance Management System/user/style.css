@@ -1,0 +1,290 @@
+body, head{
+	position:relative;
+	margin:0 auto;
+	background:url("images/btechblur.jpg");
+	background-repeat:no-repeat;
+	background-attachment:fixed;
+	background-size:100% 100%;
+	
+}
+#screenhead{
+	width:100%;
+	height:40vw;
+	margin:0 auto;
+	text-align:center;
+}
+#head{
+	margin:0 auto;
+	text-align:center;
+	position:relative;
+	width:45%;
+	height:45vw;
+}
+#loadscreen{
+	position:fixed;
+	width:100%;
+	height:100%;
+	background: url(favicon_50x50.ico);
+	background-repeat:repeat;
+	background-attachment:fixed;
+	background-position:center;
+	display:block;
+	background-size:50px 50px;
+	z-index:101;
+}
+#heading{
+	opacity:0.9;
+}
+#imgtitle{
+	position:relative;
+	width:10%;
+	height:15vw;
+	display:block;
+	text-align:left;
+}
+#titleimg{
+	position:relative;
+	width:15vw;
+	display:block;
+	text-align:left;
+}
+#txtitle{
+	position:relative;
+	width:85%;
+	display:block;
+	float:right;
+	top:-12.5vw;
+}
+header{
+	position:fixed;
+	z-index:100;
+	width:100%;
+	height:3vw;
+	font-family:Footlight MT Light;
+	font-size:2.0vw;
+	text-align:center;
+}
+#submitt{
+	position:relative;
+	text-align:center;
+	width:100px;
+	height:50px;
+	color:white;
+}
+.loginf{
+	
+	width:40%;
+	height:40px;
+}
+#form1{
+	position:relative;
+	text-align:center;
+	margin: 0 auto;
+}
+input{
+	position:relative;
+	text-align:center;
+	width:500px;
+	height:50px;
+}
+#profileform{
+	position:relative;
+	text-align:center;
+	width:300px;
+	height:40px;
+}
+#profileform2{
+	position:relative;
+	text-align:center;
+	width:200px;
+	height:40px;
+}
+#profileform3{
+	position:relative;
+	text-align:center;
+	width:400px;
+	height:40px;
+}
+#profileform4{
+	position:relative;
+	text-align:center;
+	width:80%;
+	font-size:2.5vw;
+	font-family:calisto MT;
+	margin:0 auto;
+	height:4vw;
+	min-height:30px;
+}
+#submit1{
+	position:relative;
+	width:25vw;
+	font-family:calisto MT;
+	height:5vw;
+	font-size:2.5vw;
+}
+#signinbutton{
+	position:relative;
+	width:36vw;
+	height:5vw;
+	font-size:2vw;
+	font-family:Calisto MT;
+	
+}
+#signupbutton{
+	position:relative;
+	width:36vw;
+	height:5vw;
+	font-size:2vw;
+	font-family:Calisto MT;
+	
+}
+#signinform{
+	display:block;
+	background:#dddddd;
+	width:60%;
+	margin:0 auto;
+	opacity:0.9;
+}
+.inputdesc1{
+	position:relative;
+	text-align:center;
+	font-family:Calisto MT;
+	width:80%;
+	margin:0 auto;
+	color:#aaaaaa;
+	font-size:2.5vw;
+}
+.inputdesc2{
+	position:relative;
+	text-align:center;
+	font-family:Calisto MT;
+	width:80%;
+	margin:0 auto;
+	color:#888888;
+	font-size:3.5vw;
+}
+#updatedesc{
+	position:relative;
+	height:50px;
+	top:-50px;
+}
+#updateform{
+	background:#dddddd;
+	width:60%;
+	text-align:center;
+	margin:0 auto;
+	opacity:0.9;
+}
+
+#title{
+	position:relative;
+	text-align:center;
+	background:#dddddd;
+}
+#title1{
+	position:relative;
+	font-size:3.75vw;
+	font-family:algerian;
+	color:#5555ff;
+}
+#title2{
+	position:relative;
+	font-size:3vw;
+	font-family:Calisto MT;
+	color:#aaaaaa;
+}
+#container{
+	position:relative;
+	text-align:center;
+	min-height:500px;
+	top:2.5vw;
+}
+#content{
+	position:relative;
+	min-height:500px;
+}
+footer{
+	position:relative;
+	text-align:center;
+	bottom:0%;
+	width:100%;
+	min-height:8.0vw;
+	color:#aaaaaa;
+	font-family:Monotype Corsiva;
+	font-size:3.0vw;
+}
+#hidcred{
+	position:relative;
+	text-align:center;
+	font-size:2vw;
+	color:#109fd0;
+}
+
+#spinner{
+  border: 10px solid #ffffff;
+  border-radius: 100%;
+  border-top: 10px solid #000088;
+  border-bottom: 10px solid #000088;
+  width: 75px;
+  height: 75px;
+  margin:0 auto;
+  -webkit-animation: spin 3s linear infinite;
+  animation: spin 1.5s linear infinite;
+}
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@media (max-height:1500px){
+	#container{min-height:1500px;}
+}
+@media (max-height:1250px){
+	#container{min-height:1250px;}
+}
+@media (max-height:1000px){
+	#container{min-height:1000px;}
+}
+@media (max-height:750px){
+	#container{min-height:750px;}
+}
+@media (max-width : 768px){
+	#signinform{
+		width:85%;
+	}
+	#signupform{
+		width:85%;
+	}
+	#profileform4{
+		width:80%;
+		font-size:4.0vw;
+		height:8vw;
+	}
+	.inputdesc1{
+		width:80%;
+		font-size:4.5vw;
+	}
+	#submit1{
+		height:8vw;
+		font-size:4vw;
+	}
+	#signinbutton{
+		font-size:4vw;
+		height:8vw;
+	}
+	#signupbutton{
+		font-size:4vw;
+		height:8vw;
+	}
+	#container{
+		top:3.0vw;
+	}
+	body, head{
+		background-size:175% 100%;
+		background-position:center;
+	}
+}

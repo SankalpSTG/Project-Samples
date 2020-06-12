@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>VLabs Physics Exp-2: Diffraction Grating</title>
+        <style>
+            button{
+                position: relative;
+                text-align: center;
+                width: 180px;
+                height: 36px;
+                max-width: 60%;
+                background: blue;
+                color: white;
+                font-size: 14px;
+                transition: 0.2s;
+            }
+            select{
+                position: relative;
+                text-align: center;
+                width: 270px;
+                height: 36px;
+                max-width: 100%;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                text-indent: 1px;
+                text-overflow: '';
+                background: blue;
+                color: white;
+                font-size: 14px;
+                transition: 0.2s;
+            }
+            select:hover, button:hover{
+                background: #0f0;
+            }
+            button, select{
+                border: none;
+                border-radius:5px;
+            }
+            .switchButton{
+                background: #000;
+                color: #fff;
+            }
+            head, body{
+                position: relative;
+                text-align: center;
+                width: 100%;
+                height:100vh;
+                margin: 0 auto;
+            }
+            #mainCanvas{
+                border:1px solid;
+            }
+            .canvascontainer{
+                position: relative;
+                text-align: center;
+                width: 100%;
+                height: 65%;
+            }
+            .controlpanel{
+                position: relative;
+                text-align: center;
+                width: 100%;
+                height: 34%;
+                padding: 1% auto;
+                margin-top: 5px;
+            }
+            .elementheader{
+                position: relative;
+                text-align: center;
+                width: 100%;
+                font-size: 20px;
+                font-weight: 600;
+                padding: 5px;
+            }
+            .controlelements{
+                position: relative;
+                text-align: center;
+                width: 24%;
+                height: 95%;
+                border-radius:5px;
+                border: 1px solid;
+                overflow: hidden;
+                display: inline-block;
+                transition: 0.5s;
+            }
+            .controlelements:hover{
+                border-color: #f00;
+            }
+            .preslide{
+                position: fixed;
+                text-align: center;
+                width: 100%;
+            }
+            .slidecontainer {
+                width: 80%; /* Width of the outside container */
+                margin: 0 auto;
+            }
+
+            /* The slider itself */
+            .slider {
+                -webkit-appearance: none;  /* Override default CSS styles */
+                appearance: none;
+                width: 100%; /* Full-width */
+                height: 25px; /* Specified height */
+                background: #d3d3d3; /* Grey background */
+                outline: none; /* Remove outline */
+                opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+                -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+                transition: opacity .2s;
+            }
+
+            /* Mouse-over effects */
+            .slider:hover {
+                opacity: 1; /* Fully shown on mouse-over */
+            }
+
+            /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+            .slider::-webkit-slider-thumb {
+                -webkit-appearance: none; /* Override default look */
+                appearance: none;
+                width: 25px; /* Set a specific slider handle width */
+                height: 25px; /* Slider handle height */
+                background: blue; /* Green background */
+                cursor: pointer; /* Cursor on hover */
+            }
+
+            .slider::-moz-range-thumb {
+                width: 25px; /* Set a specific slider handle width */
+                height: 25px; /* Slider handle height */
+                background: blue; /* Green background */
+                cursor: pointer; /* Cursor on hover */
+            }
+        </style>
+	</head>
+	<body>
+        <div class="preslide">
+            
+        </div>
+        <div class="container">
+            
+        </div>
+        <div class="canvascontainer">
+            <canvas id="mainCanvas" onclick="selectNearestObject(event);" onmousemove="checkIfAnythingSelected(event);">
+                
+            </canvas>
+        </div>
+        <div class="controlpanel">
+            <div class="lasercontrols controlelements">
+            </div>
+            <div class="gratingcontrols controlelements"><br><br>
+                <div class="slidecontainer">
+                    <input id="source_intensity" class="slider" type="range" min="75" max="700" value="75" onmousemove="sliderValueChanged();">
+                </div>
+                <button id="turn_source_on" onclick="turnSourceOn();">Turn Source On</button><br><br>
+                <button id="start_experiment" onclick="switchExperimentStatus();">Start Experiment</button><br><br>
+            </div>
+            <div class="screencontrols controlelements">
+                <div class="elementheader">Circuit Diagram</div>
+                <img src="images/circuit_diagram.svg" width="80%" height="80%">
+            </div>
+            <div class="gratingdetails controlelements"><br><br>
+                <button id="fix_elements" onclick="flipElementMovement();">Fix Elements</button><br><br>
+                <button id="connection_mode" onclick="flipConnectionMode();">Make Connections</button><br><br>
+                <button id="reset_modes" onclick="resetConnections();">Reset</button><br><br>
+            </div>
+        </div>
+        <img id="img_voltmeter" src="images/voltmeter.svg" style="display:none;">
+        <img id="img_ammeter" src="images/ammeter.svg" style="display: none;">
+        <img id="img_source" src="images/bulbwithdimmerstat.svg" style="display: none;">
+        <img id="img_dial" src="images/dial.svg" style="display: none;">
+        <img id="img_sensor" src="images/sensor.svg" style="display: none;">
+        <script>
+            var g_canvas;
+            var current_connection;
+            class VarResistance{
+                constructor(id, element, coordinates){
+                    this.id = id;
+                    this.element = element;
+                    this.originX = coordinates[0];
+                    this.originY = coordinates[1];
+                    this.co_x = this.originX;
+                    this.co_y = this.originY;
+                    this.dialX = 0;
+                    this.dialY = 0;
+                    this.dial_rotation = 0;
+                    this.calculateSubCoordinates();
+                    this.has_terminals = false;
+                }
+                hasTerminals(){
+                    return this.has_terminals;
+                }
+                calculateSubCoordinates(){
+                    this.dialX = this.co_x + 50;
+                    this.dialY = this.co_y + 30;
+                }
+                setCoordinates(){
+                    if(this.isSelected()){
+                        this.co_x = coordinates[0] + this.selected_distance[0];
+                        this.co_y = coordinates[1] + this.selected_distance[1];
+                    }else{
+                        this.co_x = coordinates[0];
+                        this.co_y = coordinates[1];
+                    }
+                }
+                getId(){
+                    return this.id;
+                }
+                getElement(){
+                    return this.element[0];
+                }
+                
+            }
+            class LightSource{
+                constructor(id, source_elem, source_params, coordinates){
+                    this.id = id;
+                    this.source_elem = source_elem;
+                    this.source_glow = source_params["glow"];
+                    this.intensity = source_params["intensity"];
+                    this.dial_rotation = 0;
+                    this.originX = coordinates[0];
+                    this.originY = coordinates[1];
+                    this.co_x = this.originX;
+                    this.co_y = this.originY;
+                    this.dialX = 0;
+                    this.dialY = 0;
+                    this.lowest_intensity = 75;
+                    this.light_centerX = 0;
+                    this.light_centerY = 0;
+                    this.selected_state = false;
+                    this.calculateSubCoordinates();
+                    this.has_terminals = false;
+                    this.turned_on = false;
+                }
+                turnOn(){
+                    this.turned_on = true;
+                    this.setIntensity(this.lowest_intensity);
+                }
+                turnOff(){
+                    this.setIntensity(1);
+                    this.turned_on = false;
+                }
+                turnedOn(){
+                    return this.turned_on;
+                }
+                hasTerminals(){
+                    return this.has_terminals;
+                }
+                getId(){
+                    return this.id;
+                }
+                setIntensity(intensity){
+                    if(this.turnedOn()){
+                        this.intensity = intensity;
+                        this.setDialRotation(Math.round(intensity / 3));
+                    }
+                }
+                setDialRotation(rotation){
+                    this.dial_rotation = rotation;
+                }
+                calculateSubCoordinates(){
+                    this.dialX = this.co_x + 40;
+                    this.dialY = this.co_y + 181.5;
+                    this.light_centerX = this.co_x + 65;
+                    this.light_centerY = this.co_y + 65;
+                }
+                setCoordinates(coordinates){
+                    if(this.isSelected()){
+                        this.co_x = coordinates[0] + this.selected_distance[0];
+                        this.co_y = coordinates[1] + this.selected_distance[1];
+                    }else{
+                        this.co_x = coordinates[0];
+                        this.co_y = coordinates[1];
+                    }
+                    this.calculateSubCoordinates();
+                }
+                getId(){
+                    return this.id;
+                }
+                getElement(){
+                    return this.source_elem[0];
+                }
+                draw(canvas){
+                    var context = canvas.getContext("2d");
+                    if(this.isVisible()){
+                        var gradient = context.createRadialGradient(this.light_centerX, this.light_centerY, this.source_glow, this.light_centerX, this.light_centerY, this.intensity);
+                        gradient.addColorStop(0, "#ffd700");
+                        gradient.addColorStop(1, "white");
+                        context.fillStyle = gradient;
+                        context.fillRect(0, 0, canvas.width, canvas.height);
+                        context.drawImage(this.source_elem[0], this.co_x, this.co_y);
+                        
+                        context.save();
+                        context.translate(this.dialX + this.source_elem[1].width / 2, this.dialY + this.source_elem[1].height / 2);
+                        context.rotate(this.dial_rotation * Math.PI / 180);
+                        context.translate(-(this.source_elem[1].width / 2),-(this.source_elem[1].height / 2));
+                        context.drawImage(this.source_elem[1],0,0);
+                        context.restore();
+                    }
+                }
+                resetPosition(){
+                    this.co_x = this.originX;
+                    this.co_y = this.originY;
+                }
+                getCurrentPosition(){
+                    return [this.co_x, this.co_y];
+                }
+                getX(){
+                    return this.co_x;
+                }
+                getY(){
+                    return this.co_y;
+                }
+                setPosition(coordinates){
+                    this.co_x = coordinates[0];
+                    this.co_y = coordinates[1];
+                }
+                setVisibile(visibility){
+                    this.visibility = visibility;
+                }
+                isVisible(){
+                    return this.visibility;
+                }
+                setSelectedState(state, distance){
+                    this.selected_state = state;
+                    this.selected_distance = distance;
+                }
+                isSelected(){
+                    return this.selected_state;
+                }
+                getCenter(){
+                    return [this.getX() + this.source_elem[0].width / 2, this.getY() + this.source_elem[0].height / 2];
+                    
+                }
+                
+            }
+            class Sensor{
+                constructor(id, sensor_elem, sensor_param, coordinates, terminal_offsets){
+                    this.id = id;
+					this.sensor_elem = sensor_elem;
+                    this.originX = coordinates[0];
+                    this.originY = coordinates[1];
+					this.co_x = this.originX;
+                    this.co_y = this.originY;
+                    this.visibility = true;
+                    this.selected_state = false;
+                    this.selected_distance = 0;
+                    this.terminal_positive_offset = terminal_offsets[0];
+                    this.terminal_negative_offset = terminal_offsets[1];
+                    this.has_terminals = true;
+                }
+                hasTerminals(){
+                    return this.has_terminals;
+                }
+                getId(){
+                    return this.id;
+                }
+                getTerminalOffsets(){
+                    return [this.terminal_positive_offset, this.terminal_negative_offset];
+                }
+                setCoordinates(coordinates){
+                    if(this.isSelected()){
+                        this.co_x = coordinates[0] + this.selected_distance[0];
+                        this.co_y = coordinates[1] + this.selected_distance[1];
+                    }else{
+                        this.co_x = coordinates[0];
+                        this.co_y = coordinates[1];
+                    }
+                }
+                isVisible(){
+                    return this.visibility;
+                }
+                setVisibile(visibility){
+                    this.visibility = visibility;
+                }
+                draw(canvas){
+                    var context = canvas.getContext("2d");
+                    if(this.isVisible()){
+                        context.drawImage(this.sensor_elem, this.co_x, this.co_y);
+                    }
+                }
+                setSelectedState(state, distance){
+                    this.selected_state = state;
+                    this.selected_distance = distance;
+                }
+                isSelected(){
+                    return this.selected_state;
+                }
+                getCenter(){
+                    return [this.getX() + this.sensor_elem.width / 2, this.getY() + this.sensor_elem.height / 2];
+                }
+                resetPosition(){
+                    this.co_x = this.originX;
+                    this.co_y = this.originY;
+                }
+                getCurrentPosition(){
+                    return [this.co_x, this.co_y];
+                }
+                getX(){
+                    return this.co_x;
+                }
+                getY(){
+                    return this.co_y;
+                }
+                getElement(){
+                    return this.sensor_elem;
+                }
+            }
+            class Meters{
+                constructor(id, meter_elem, meter_center, meter_radius, read_min, read_max, coordinates, terminal_offsets){
+                    this.id = id;
+                    this.meter_elem = meter_elem;
+                    this.meter_center = meter_center;
+                    this.meter_radius = meter_radius;
+                    this.read_min = read_min;
+                    this.read_max = read_max;
+                    this.originX = coordinates[0];
+                    this.originY = coordinates[1];
+                    this.co_x = this.originX;
+                    this.co_y = this.originY;
+                    this.visibility = false;
+                    this.selected_state = false;
+                    this.selected_distance = 0;
+                    this.terminal_positive_offset = terminal_offsets[0];
+                    this.terminal_negative_offset = terminal_offsets[1];
+                    this.has_terminals = true;
+                }
+                getTerminalOffsets(){
+                    return [this.terminal_positive_offset, this.terminal_negative_offset];
+                }
+                hasTerminals(){
+                    return this.has_terminals;
+                }
+                setCoordinates(coordinates){
+                    if(this.isSelected()){
+                        this.co_x = coordinates[0] + this.selected_distance[0];
+                        this.co_y = coordinates[1] + this.selected_distance[1];
+                    }else{
+                        this.co_x = coordinates[0];
+                        this.co_y = coordinates[1];
+                    }
+                }
+                getId(){
+                    return this.id;
+                }
+                getElement(){
+                    return this.meter_elem;
+                }
+                draw(canvas){
+                    var context = canvas.getContext("2d");
+                    if(this.isVisible()){
+                        context.drawImage(this.meter_elem, this.co_x, this.co_y);
+                        this.drawScale(context);
+                    }
+                }
+                drawScale(context){
+                var radius = this.meter_radius;
+                context.beginPath();
+                context.lineWidth = 1;
+                var x1y1 = [this.meter_center[0] + this.co_x, this.meter_center[1] + this.co_y];
+                context.arc(x1y1[0], x1y1[1], radius, 1 * Math.PI ,2 * Math.PI , false);
+                var angle = 180;
+                context.stroke();
+                context.beginPath();
+                context.arc(x1y1[0], x1y1[1], 5, 0, 2 * Math.PI, false);
+                context.fill();
+                context.stroke();
+                for(var i = Math.PI; i <= Math.PI * 2; i += Math.PI * 0.1){
+                    context.lineWidth = 1;
+                    var x2y2 = [];
+                    x2y2.push(x1y1[0] + radius * Math.cos(i));
+                    x2y2.push(x1y1[1] + radius * Math.sin(i));
+                    var x3y3 = [];
+                    x3y3.push(x1y1[0] + (radius + 10) * Math.cos(i));
+                    x3y3.push(x1y1[1] + (radius + 10) * Math.sin(i));
+                    context.beginPath();
+                    context.moveTo(x2y2[0], x2y2[1]);
+                    context.lineTo(x3y3[0], x3y3[1]);
+                    context.stroke();
+                    if(j >= Math.PI * 2){
+                        break;
+                    }
+                    for(var j = i; j <= i + Math.PI * 0.1; j += Math.PI * 0.02){
+                        context.lineWidth = 0.8;
+                        var x2y2 = [];
+                        x2y2.push(x1y1[0] + radius * Math.cos(j));
+                        x2y2.push(x1y1[1] + radius * Math.sin(j));
+                        var x3y3 = [];
+                        x3y3.push(x1y1[0] + (radius + 8) * Math.cos(j));
+                        x3y3.push(x1y1[1] + (radius + 8) * Math.sin(j));
+                        context.beginPath();
+                        context.moveTo(x2y2[0], x2y2[1]);
+                        context.lineTo(x3y3[0], x3y3[1]);
+                        context.stroke();
+                    }
+                }
+                }
+                resetPosition(){
+                    this.co_x = this.originX;
+                    this.co_y = this.originY;
+                }
+                getCurrentPosition(){
+                    return [this.co_x, this.co_y];
+                }
+                getX(){
+                    return this.co_x;
+                }
+                getY(){
+                    return this.co_y;
+                }
+                setPosition(coordinates){
+                    this.co_x = coordinates[0];
+                    this.co_y = coordinates[1];
+                }
+                setVisibile(visibility){
+                    this.visibility = visibility;
+                }
+                isVisible(){
+                    return this.visibility;
+                }
+                setSelectedState(state, distance){
+                    this.selected_state = state;
+                    this.selected_distance = distance;
+                }
+                isSelected(){
+                    return this.selected_state;
+                }
+                getCenter(){
+                    return [this.getX() + this.meter_elem.width / 2, this.getY() + this.meter_elem.height / 2];
+                }
+            }
+            class Canvas{
+                constructor(canvas, canvasId, width, height, pixelRatio, elements){
+                    this.canvas = canvas;
+                    this.canvasId = canvasId;
+                    this.canvas.width = Math.floor(window.innerWidth * width * 0.98);
+                    this.canvas.height = Math.floor(window.innerHeight * height * 0.98);
+                    this.pixelRatio = pixelRatio;
+                    this.fontSize = pixelRatio * 0.6;
+                    this.elements = elements;
+                    this.elements_are_movable = true;
+                    this.connection_mode = false;
+                    this.connections = [];
+                }
+                getId(){
+                    return this.id;
+                }
+                addConnection(new_connection){
+                    //From, +/-: 0/1, To, +/-:0/1
+                    for(var i = 0; i < this.connections.length; i++){
+                        if(this.connections[i].getStartObject() == new_connection.getStartObject() 
+                          && this.connections[i].getEndObject() == new_connection.getEndObject()
+                          && this.connections[i].getStartTerminalType() == new_connection.getStartTerminalType()
+                          && this.connections[i].getEndTerminalType() == new_connection.getEndTerminalType()){
+                            alert("Same Connection Already Exists!");
+                            return;
+                        }else if(this.connections[i].getEndObject() == new_connection.getStartObject() 
+                          && this.connections[i].getStartObject() == new_connection.getEndObject()
+                          && this.connections[i].getEndTerminalType() == new_connection.getStartTerminalType()
+                          && this.connections[i].getStartTerminalType() == new_connection.getEndTerminalType()){
+                            alert("Same Conenction Already Exists!");         
+                            return;
+                        }
+                    }
+                    this.connections.push(new_connection); 
+                }
+                resetConnections(){
+                    this.connections = [];
+                }
+                setConnectionMode(connection_mode){
+                    this.connection_mode = connection_mode;
+                }
+                isConnectionModeEnabled(){
+                    return this.connection_mode;
+                }
+                setElementsMovable(elements_are_movable){
+                    this.elements_are_movable = elements_are_movable;
+                }
+                isMovementEnabled(){
+                    return this.elements_are_movable;
+                }
+                setPixelRatio(pixelRatio){
+                    this.pixelRatio = pixelRatio;
+                }
+                getCanvas(){
+                    return this.canvas;
+                }
+                getCanvasContext(){
+                    return this.canvas.getContext("2d");
+                }
+                getElement(id){
+                    for(i = 0; i < this.elements.length; i++){
+                        var elementId = this.elements.getId();
+                        if(elementId == id){
+                            return this.elements[id];
+                        }
+                    }
+                }
+                isAnyObjectSelected(){
+                    for(var i = 0; i < this.elements.length; i++){
+                        if(this.elements[i].isSelected()){
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                dropSelectedObject(){
+                    for(var i = 0; i < this.elements.length; i++){
+                        if(this.elements[i].isSelected()){
+                            this.elements[i].setSelectedState(false, [0, 0]);
+                        }
+                    }
+                }
+                moveSelectedObject(mouseX, mouseY){
+                    for(var i = 0; i < this.elements.length; i++){
+                        if(this.elements[i].isSelected()){
+                            this.elements[i].setCoordinates([mouseX, mouseY]);
+                        }
+                    }
+                    this.refreshCanvas();
+                }
+                selectNearestObject(mouseX, mouseY){
+                    var nearest_index = -1;
+                    var smallest_distance = 10000;
+                    for(var i = 0; i < this.elements.length; i++){
+                        var elem_center = this.elements[i].getCenter();
+                        var distance = Math.sqrt(Math.pow(elem_center[0] - mouseX, 2) + Math.pow(elem_center[1] - mouseY, 2));
+                        if(distance < smallest_distance){
+                            smallest_distance = distance;
+                            nearest_index = i;
+                        }
+                    }
+                    if(nearest_index != -1){
+                        var position = [this.elements[nearest_index].getX(), this.elements[nearest_index].getY()];
+                        var element = this.elements[nearest_index].getElement();
+                        var width = element.width;
+                        var height = element.height;
+                        if(((mouseX > position[0]) && (mouseX < (position[0] + width))) && ((mouseY > position[1]) && (mouseY < (position[1] + height)))){
+                            this.elements[nearest_index].setSelectedState(true, [this.elements[nearest_index].getX() - mouseX, this.elements[nearest_index].getY() - mouseY]);
+                        }
+                    }
+                }
+                selectNearestNode(mouseX, mouseY){
+                    var shortest_terminal_distance = 10000;
+                    var nearest_terminal_coordinates = [0, 0];
+                    var nearest_terminal = "";
+                    var terminal_type = 0;
+                    for(var i = 0; i < this.elements.length; i++){
+                        if(this.elements[i].hasTerminals()){
+                            var terminal_offsets = this.elements[i].getTerminalOffsets();
+                            var element_center = this.elements[i].getCenter();
+                            var positive_terminal_offset = terminal_offsets[0];
+                            var positive_terminal_coordinates = [element_center[0] + positive_terminal_offset[0], element_center[1] + positive_terminal_offset[1]];
+                            var positive_terminal_distance = Math.floor(Math.sqrt(Math.pow(mouseX - positive_terminal_coordinates[0], 2) + Math.pow(mouseY - positive_terminal_coordinates[1], 2)));
+                            if(positive_terminal_distance < shortest_terminal_distance){
+                                shortest_terminal_distance = positive_terminal_distance;
+                                nearest_terminal_coordinates = positive_terminal_coordinates;
+                                nearest_terminal = this.elements[i].getId();
+                                terminal_type = 0;
+                            }
+                            var negative_terminal_offset = terminal_offsets[1];
+                            var negative_terminal_coordinates = [element_center[0] + negative_terminal_offset[0], element_center[1] + negative_terminal_offset[1]];
+                            var negative_terminal_distance = Math.floor(Math.sqrt(Math.pow(mouseX - negative_terminal_coordinates[0], 2) + Math.pow(mouseY - negative_terminal_coordinates[1], 2)));
+                            if(negative_terminal_distance < shortest_terminal_distance){
+                                shortest_terminal_distance = negative_terminal_distance;
+                                nearest_terminal_coordinates = negative_terminal_coordinates;
+                                nearest_terminal = this.elements[i].getId();
+                                terminal_type = 1;
+                            }
+                        }
+                    }
+                    console.log(shortest_terminal_distance + "\n" + nearest_terminal_coordinates + "\n" + nearest_terminal + "\n" + terminal_type);
+                    var context = this.getCanvasContext();
+                    context.beginPath();
+                    context.lineWidth = 12;
+                    context.arc(nearest_terminal_coordinates[0], nearest_terminal_coordinates[1], 10, 0, 2 * Math.PI);
+                    context.stroke();
+                    return [nearest_terminal_coordinates, terminal_type, nearest_terminal];
+                }
+                highlightNearestNode(mouseX, mouseY){
+                    var shortest_terminal_distance = 10000;
+                    var nearest_terminal_coordinates = [0, 0];
+                    var nearest_terminal = "";
+                    var terminal_type = 0;
+                    for(var i = 0; i < this.elements.length; i++){
+                        if(this.elements[i].hasTerminals()){
+                            var terminal_offsets = this.elements[i].getTerminalOffsets();
+                            var element_center = this.elements[i].getCenter();
+                            var positive_terminal_offset = terminal_offsets[0];
+                            var positive_terminal_coordinates = [element_center[0] + positive_terminal_offset[0], element_center[1] + positive_terminal_offset[1]];
+                            var positive_terminal_distance = Math.floor(Math.sqrt(Math.pow(mouseX - positive_terminal_coordinates[0], 2) + Math.pow(mouseY - positive_terminal_coordinates[1], 2)));
+                            if(positive_terminal_distance < shortest_terminal_distance){
+                                shortest_terminal_distance = positive_terminal_distance;
+                                nearest_terminal_coordinates = positive_terminal_coordinates;
+                                nearest_terminal = this.elements[i].getId();
+                                terminal_type = 0;
+                            }
+                            var negative_terminal_offset = terminal_offsets[1];
+                            var negative_terminal_coordinates = [element_center[0] + negative_terminal_offset[0], element_center[1] + negative_terminal_offset[1]];
+                            var negative_terminal_distance = Math.floor(Math.sqrt(Math.pow(mouseX - negative_terminal_coordinates[0], 2) + Math.pow(mouseY - negative_terminal_coordinates[1], 2)));
+                            if(negative_terminal_distance < shortest_terminal_distance){
+                                shortest_terminal_distance = negative_terminal_distance;
+                                nearest_terminal_coordinates = negative_terminal_coordinates;
+                                nearest_terminal = this.elements[i].getId();
+                                terminal_type = 1;
+                            }
+                        }
+                    }
+                    this.refreshCanvas();
+                    var context = this.getCanvasContext();
+                    context.beginPath();
+                    context.lineWidth = 12;
+                    context.arc(nearest_terminal_coordinates[0], nearest_terminal_coordinates[1], 10, 0, 2 * Math.PI);
+                    context.stroke();
+                }
+                setSourceIntensity(value){
+                    this.elements[0].setIntensity(value);
+                }
+                toggleSourceState(){
+                    if(this.elements[0].turnedOn()){
+                        this.elements[0].turnOff();
+                        return false;
+                    }else{
+                        this.elements[0].turnOn();
+                        return true;
+                    }
+                }
+                refreshCanvas(){
+                    var context = this.getCanvasContext();
+                    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    for(var i = 0; i < this.elements.length; i++){
+                        this.elements[i].draw(this.getCanvas());
+                    }
+                    for(var i = 0; i < this.connections.length; i++){
+                        this.connections[i].drawConnection(this.getCanvasContext());
+                    }
+                }
+                resetView(){
+                    var context = this.getCanvasContext();
+                    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.refreshCanvas();
+                }
+                verifyConnections(){
+                    var correct_connections = 0;
+                    if (this.connections.length == 3){
+                        var connection_matrix = [];
+                        for(var i = 0; i < this.connections.length; i++){
+                            connection_matrix.push([this.connections[i].getStartObject(), this.connections[i].getEndObject(i), this.connections[i].getStartTerminalType(), this.connections[i].getEndTerminalType()]);
+                        }
+                        for(var i = 0; i < connection_matrix.length; i++){
+                            if (connection_matrix[i][0] == "sensor"){
+                                if(connection_matrix[i][1] == "ammeter"){
+                                    if(connection_matrix[i][2] == 0 && connection_matrix[i][3] == 0){
+                                        correct_connections += 1;
+                                    }
+                                }
+                            }
+                            if (connection_matrix[i][0] == "ammeter"){
+                                if(connection_matrix[i][1] == "voltmeter"){
+                                    if(connection_matrix[i][2] == 1 && connection_matrix[i][3] == 0){
+                                        correct_connections += 1;
+                                    }
+                                }
+                            }
+                            if (connection_matrix[i][0] == "voltmeter"){
+                                if(connection_matrix[i][1] == "sensor"){
+                                    if(connection_matrix[i][2] == 1 && connection_matrix[i][3] == 1){
+                                        correct_connections += 1;
+                                    }
+                                }
+                            }
+                            if (connection_matrix[i][0] == "sensor"){
+                                if(connection_matrix[i][1] == "voltmeter"){
+                                    if(connection_matrix[i][2] == 1 && connection_matrix[i][3] == 1){
+                                        correct_connections += 1;
+                                    }
+                                }
+                            }
+                            if (connection_matrix[i][0] == "voltmeter"){
+                                if(connection_matrix[i][1] == "ammeter"){
+                                    if(connection_matrix[i][2] == 0 && connection_matrix[i][3] == 1){
+                                        correct_connections += 1;
+                                    }
+                                }
+                            }
+                            if (connection_matrix[i][0] == "ammeter"){
+                                if(connection_matrix[i][1] == "sensor"){
+                                    if(connection_matrix[i][2] == 0 && connection_matrix[i][3] == 0){
+                                        correct_connections += 1;
+                                    }
+                                }
+                            }
+                        }
+                        if(correct_connections != 3){
+                            alert("Are you sure your circuit arrangement is correct?");
+                            return false;
+                        }else{
+                            return true;
+                        }
+                    }else{
+                        alert("Are you sure your circuit arrangement is correct?");
+                        return false;
+                    }
+                }
+            }
+            class Connection{
+                constructor(){
+                    this.start_coordinates = [0, 0];
+                    this.end_coordinates = [0, 0];
+                    this.start_terminal_type = 0;
+                    this.start_object = "";
+                    this.end_terminal_type = 0;
+                    this.end_object = "";
+                    this.line_offset = 50;
+                    this.default_linewidth = 5;
+                }
+                getStartTerminalType(){
+                    return this.start_terminal_type;
+                }
+                getEndTerminalType(){
+                    return this.end_terminal_type;
+                }
+                getStartObject(){
+                    return this.start_object;
+                }
+                getEndObject(){
+                    return this.end_object;
+                }
+                setStartNode(node_data){
+                    this.start_coordinates = node_data[0];
+                    this.start_terminal_type = node_data[1];
+                    this.start_object = node_data[2];
+                }
+                setEndNode(node_data){
+                    this.end_coordinates = node_data[0];
+                    this.end_terminal_type = node_data[1];
+                    this.end_object = node_data[2];
+                }
+                drawConnection(context){
+                    var startoffset = 0;
+                    var endoffset = 0;
+                    var default_lineextra = this.default_linewidth/2;
+                    if(this.start_coordinates[1] < this.end_coordinates[1]){
+                        startoffset += this.end_coordinates[1] - this.start_coordinates[1];
+                    }else if(this.start_coordinates[1] > this.end_coordinates[1]){
+                        endoffset += this.start_coordinates[1] - this.end_coordinates[1];
+                    }
+                    if(this.start_coordinates[0] > this.end_coordinates[0]){
+                        default_lineextra = - default_lineextra;
+                    }
+                    if(this.start_terminal_type == 0){
+                        context.strokeStyle = "red";
+                        this.line_offset = 25;
+                    }
+                    context.beginPath();
+                    context.lineWidth = 5;
+                    context.moveTo(this.start_coordinates[0], this.start_coordinates[1]);
+                    context.lineTo(this.start_coordinates[0], this.start_coordinates[1] + this.line_offset + startoffset);
+                    context.stroke();
+                    context.beginPath();
+                    context.moveTo(this.start_coordinates[0] - default_lineextra, this.start_coordinates[1] + this.line_offset + startoffset);
+                    context.lineTo(this.end_coordinates[0] + default_lineextra, this.end_coordinates[1] + this.line_offset + endoffset);
+                    context.stroke();
+                    context.beginPath();
+                    context.moveTo(this.end_coordinates[0], this.end_coordinates[1] + this.line_offset + endoffset);
+                    context.lineTo(this.end_coordinates[0], this.end_coordinates[1]);
+                    context.stroke();
+                    context.strokeStyle = "black";
+                }
+            }
+            function begin(){
+                var voltmeter = document.getElementById("img_voltmeter");
+                var ammeter = document.getElementById("img_ammeter");
+                var source = document.getElementById("img_source");
+                var dial = document.getElementById("img_dial");
+                var sensor = document.getElementById("img_sensor");
+                var g_voltmeter = new Meters("voltmeter", voltmeter, [90, 90], 50, 0, 5, [500, 10], [[-53, 56], [55, 56]]);
+                var g_ammeter = new Meters("ammeter", ammeter, [90, 90], 50, 0, 5, [300, 10], [[-53, 56], [55, 56]]);
+                var g_source = new LightSource("source", [source, dial], {intensity:1, glow:1}, [0, 0], [50, 100], [65, 65]);
+                var g_sensor = new Sensor("sensor", sensor, [], [150, 10], [[-27, 65], [29, 65]]);
+                g_ammeter.setVisibile(true);
+                g_voltmeter.setVisibile(true);
+                g_source.setVisibile(true);
+                var canvas_elem = document.getElementById("mainCanvas");
+                g_canvas = new Canvas(canvas_elem, "mainCanvas", 0.8, 0.6, 10, [g_source, g_ammeter, g_voltmeter, g_sensor]);
+                g_canvas.refreshCanvas();
+                alert("Click on any of the items in the canvas to move them.");
+            }
+            function checkIfAnythingSelected(event){
+                if(g_canvas != undefined){
+                    var canvas_elem = g_canvas.getCanvas();
+                    var rect = canvas_elem.getBoundingClientRect();
+                    var mouseX = event.clientX - rect.left;
+                    var mouseY = event.clientY - rect.top;
+                    if(g_canvas.isMovementEnabled()){
+                        g_canvas.moveSelectedObject(mouseX, mouseY);   
+                    }else if(g_canvas.isConnectionModeEnabled()){
+                        g_canvas.highlightNearestNode(mouseX, mouseY);
+                    }
+                }
+            }
+            function selectNearestObject(event){
+                if(g_canvas != undefined){
+                    var canvas_elem = g_canvas.getCanvas();
+                    var rect = canvas_elem.getBoundingClientRect();
+                    var mouseX = event.clientX - rect.left;
+                    var mouseY = event.clientY - rect.top;
+                    if(g_canvas.isAnyObjectSelected()){
+                        g_canvas.dropSelectedObject();
+                    }else{
+                        if(g_canvas.isMovementEnabled()){
+                            g_canvas.selectNearestObject(mouseX, mouseY);
+                        }else if(g_canvas.isConnectionModeEnabled()){
+                            var nodeData = g_canvas.selectNearestNode(mouseX, mouseY);
+                            if(current_connection == null){
+                                current_connection = new Connection();
+                                current_connection.setStartNode(nodeData);
+                            }else{
+                                current_connection.setEndNode(nodeData);
+                                g_canvas.addConnection(current_connection);
+                                current_connection = null;
+                                document.getElementById("fix_elements").disabled = true;
+                                document.getElementById("fix_elements").style.background = "#737373";
+                            }
+                        }
+                    }
+                }
+            }
+            function flipElementMovement(){
+                g_canvas.setElementsMovable(!(g_canvas.isMovementEnabled()));
+                if(g_canvas.isConnectionModeEnabled() && g_canvas.isMovementEnabled()){
+                    flipConnectionMode();
+                }
+                if(document.getElementById("fix_elements").innerHTML == "Fix Elements"){
+                    document.getElementById("fix_elements").innerHTML = "Move Elements";
+                }else{
+                    document.getElementById("fix_elements").innerHTML = "Fix Elements";
+                }
+                console.log("Movement Mode : " + g_canvas.isMovementEnabled());
+                g_canvas.resetView();
+            }
+            function flipConnectionMode(){
+                g_canvas.setConnectionMode(!(g_canvas.isConnectionModeEnabled()));
+                if(g_canvas.isConnectionModeEnabled() && g_canvas.isMovementEnabled()){
+                    flipElementMovement();
+                }
+                if(document.getElementById("connection_mode").innerHTML == "Make Connections"){
+                    document.getElementById("connection_mode").innerHTML = "Done";
+                }else{
+                    document.getElementById("connection_mode").innerHTML = "Make Connections";
+                }
+                g_canvas.resetView();
+                console.log("Connection Mode : " + g_canvas.isConnectionModeEnabled());
+            }
+            function resetConnections(){
+                g_canvas.resetConnections();
+                current_connection = null;
+                document.getElementById("fix_elements").disabled = false;
+                document.getElementById("fix_elements").style.background = "blue";
+                g_canvas.resetView();
+            }
+            function switchExperimentStatus(){
+                if(document.getElementById("reset_modes").disabled){
+                    document.getElementById("fix_elements").disabled = false;
+                    document.getElementById("connection_mode").disabled = false;
+                    document.getElementById("reset_modes").disabled = false;
+                    document.getElementById("fix_elements").style.background = "blue";
+                    document.getElementById("connection_mode").style.background = "blue";
+                    document.getElementById("reset_modes").style.background = "blue";
+                    document.getElementById("start_experiment").innerHTML = "Start Experiment";
+                }else{
+                    g_canvas.verifyConnections();
+                    g_canvas.setConnectionMode(false);
+                    g_canvas.setElementsMovable(false);
+                    if(g_canvas.isConnectionModeEnabled()){
+                        flipConnectionMode();
+                    }
+                    if(g_canvas.isMovementEnabled()){
+                        flipElementMovement();
+                    }
+                    document.getElementById("fix_elements").disabled = true;
+                    document.getElementById("connection_mode").disabled = true;
+                    document.getElementById("reset_modes").disabled = true;
+                    document.getElementById("fix_elements").style.background = "#737373";
+                    document.getElementById("connection_mode").style.background = "#737373";
+                    document.getElementById("reset_modes").style.background = "#737373";
+                    document.getElementById("start_experiment").innerHTML = "Stop";
+                }
+            }
+            function sliderValueChanged(){
+                var intensity = document.getElementById("source_intensity").value;
+                g_canvas.setSourceIntensity(intensity);
+                g_canvas.resetView();
+            }
+            function turnSourceOn(){
+                if(g_canvas.toggleSourceState()){
+                    document.getElementById("turn_source_on").innerHTML = "Turn Source Off";
+                    var intensity = document.getElementById("source_intensity").value;
+                    g_canvas.setSourceIntensity(intensity);
+                }else{
+                    document.getElementById("turn_source_on").innerHTML = "Turn Source On";
+                }
+                g_canvas.resetView();
+            }
+            window.addEventListener('load', begin, false );
+            
+        </script>
+	</body>
+</html>

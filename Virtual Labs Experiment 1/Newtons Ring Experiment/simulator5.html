@@ -1,0 +1,407 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+		<title>Untitled 1</title>
+		<script src="scripts/circlewithevent.js"></script>
+		<script src="scripts/graph.ob.js"></script>
+		<script src="scripts/graph_use.ob.js"></script>
+		<script src="scripts/graph_use2.ob.js"></script>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>
+					<canvas id="sim_can_1" width="400px" height="400px" style="border:1px solid;" onclick="manageclick(event);">
+				</td>
+				<td>
+					<canvas id="sim_can_2" width="600px" height="400px" style="border:1px solid;" onclick="manageclick2(event);">
+				</td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td colspan="2" align="center">
+					<canvas id="sim_can_3" width="800px" height="100px" style="border:1px solid;" onclick="manageclick(event);">
+				</td>
+				<td align="center">
+					<b>Vernier Reading</b><br><input id="digital_vernier" type="text" placeholder="Vernier Reading" readonly /><br>
+					<b>Main Scale</b><br><input id="digital_main_scale" type="text" placeholder="Main Scale" readonly /><br>
+					<button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#aaa; font-weight:bold;color:black; font-size:16px;"  onclick="addtotable()">Add to Table</button>
+				</td>
+			</tr>
+		</table>
+		<table border="1ps solid" width="1000px">
+			<tr>
+				<td colspan="5" align="center"><button style="width:800px;height:35px;border-radius:5px 5px 5px 5px; background:#0000ff; font-weight:bold;color:white; font-size:18px;"  onclick="showapparatus()">Show Travelling Microscope</button></td>
+			</tr>	
+			<tr>
+				<td align="center" colspan="2" align="center"><b>Microscope Movement</b></td>
+				<td align="center" colspan="2" align="center"><b>Lens Movement</b></td>
+			</tr>
+			<tr>
+				<td align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#00ff00; font-weight:bold;color:black; font-size:16px;"  onclick="goleft()">Left</button></td>
+				<td align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#00ff00; font-weight:bold;color:black; font-size:16px;"  onclick="goright()">Right</button></td>
+				<td align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#ff0000; font-weight:bold;color:white; font-size:16px;"  onclick="goup()">Up</button></td>
+				<td align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#ff0000; font-weight:bold;color:white; font-size:16px;"  onclick="godown()">Down</button></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#aaa; font-weight:bold;color:black; font-size:16px;"  onclick="resetmicroscope()">Reset Position</button></td>
+				<td colspan="2" align="center"><button style="width:180px;height:25px;border-radius:5px 5px 5px 5px; background:#aaa; font-weight:bold;color:black; font-size:16px;"  onclick="generategraph()">Generate Graph</button></td>
+			</tr>
+		</table>
+		<img id="mscope_lens_top" src="images/resized/mscope_lens_top_400x400.png" style="display:none">
+		<img id="black_stage" src="images/resized/blackstage.png" style="display:none">
+		<img id="mscope_bench" src="images/resized/bench_600x400.png" style="display:none">
+		<img id="mscope_holder" src="images/resized/holder_600x400.png" style="display:none">
+		<img id="mscope_lens" src="images/resized/lens_600x400.png" style="display:none">
+		<img id="monochromatic_source" src="images/resized/monochromatic_light_source_side_cr.png" style="display:none">
+		<img id="scale" src="images/resized/mainscale.png" style="display:none">
+		<table id="readingstable" border="1px solid">
+			<tr>
+				<th>Ring</th>
+				<th>Left MSR</th>
+				<th>Left VSR</th>
+				<th>Left TR</th>
+				<th>Right MSR</th>
+				<th>Right VSR</th>
+				<th>Right TR</th>
+				<th>Diameter</th>
+				<th>Diameter Square</th>
+				<th>Difference</th>
+			</tr>
+			<tr id="trring1">
+				<td id="ring1">1</td><td id="lmsr1"></td><td id="lvsr1"></td><td id="ltr1"></td><td id="rmsr1"></td><td id="rvsr1"></td><td id="rtr1"></td><td id="diameter1"></td><td id="dsquare1"></td><td id="difference1"></td>
+			</tr>
+			<tr id="trring2">
+				<td id="ring2">2</td><td id="lmsr2"></td><td id="lvsr2"></td><td id="ltr2"></td><td id="rmsr2"></td><td id="rvsr2"></td><td id="rtr2"></td><td id="diameter2"></td><td id="dsquare2"></td><td id="difference2"></td>
+			</tr>
+			<tr id="trring3">
+				<td id="ring3">3</td><td id="lmsr3"></td><td id="lvsr3"></td><td id="ltr3"></td><td id="rmsr3"></td><td id="rvsr3"></td><td id="rtr3"></td><td id="diameter3"></td><td id="dsquare3"></td><td id="difference3"></td>
+			</tr>
+			<tr id="trring4">
+				<td id="ring4">4</td><td id="lmsr4"></td><td id="lvsr4"></td><td id="ltr4"></td><td id="rmsr4"></td><td id="rvsr4"></td><td id="rtr4"></td><td id="diameter4"></td><td id="dsquare4"></td><td id="difference4"></td>
+			</tr>
+			<tr id="trring5">
+				<td id="ring5">5</td><td id="lmsr5"></td><td id="lvsr5"></td><td id="ltr5"></td><td id="rmsr5"></td><td id="rvsr5"></td><td id="rtr5"></td><td id="diameter5"></td><td id="dsquare5"></td><td id="difference5"></td>
+			</tr>
+			<tr id="trring6">
+				<td id="ring6">6</td><td id="lmsr6"></td><td id="lvsr6"></td><td id="ltr6"></td><td id="rmsr6"></td><td id="rvsr6"></td><td id="rtr6"></td><td id="diameter6"></td><td id="dsquare6"></td><td id="difference6"></td>
+			</tr>
+			<tr id="trring7">
+				<td id="ring7">7</td><td id="lmsr7"></td><td id="lvsr7"></td><td id="ltr7"></td><td id="rmsr7"></td><td id="rvsr7"></td><td id="rtr7"></td><td id="diameter7"></td><td id="dsquare7"></td><td id="difference7"></td>
+			</tr>
+			<tr id="trring8">
+				<td id="ring8">8</td><td id="lmsr8"></td><td id="lvsr8"></td><td id="ltr8"></td><td id="rmsr8"></td><td id="rvsr8"></td><td id="rtr8"></td><td id="diameter8"></td><td id="dsquare8"></td><td id="difference8"></td>
+			</tr>
+			<tr id="trring9">
+				<td id="ring9">9</td><td id="lmsr9"></td><td id="lvsr9"></td><td id="ltr9"></td><td id="rmsr9"></td><td id="rvsr9"></td><td id="rtr9"></td><td id="diameter9"></td><td id="dsquare9"></td><td id="difference9"></td>
+			</tr>
+			<tr id="wavelengthcolumn">
+				<td id="wavelength" colspan="10">Wavelength : </td>
+			</tr>
+		</table>
+		<div id="grapharea" style="width:600px; height:400px;">
+		</div>
+		<script>
+			var addedvaluecount = 0;
+			var air_diameters = [0.222, 0.248, 0.330, 0.350, 0.395, 0.410, 0.452, 0.453, 0.501];
+			var datapoints = [];
+			var datapoints2 = [];
+			var air_lmsr = [10.05, 10.1, 10.1, 10.15, 10.15, 10.2, 10.25, 10.25, 10.3];
+			var air_rmsr = [9.85, 9.85, 9.8, 9.8, 9.8, 9.8, 9.8, 9.75, 9.75];
+			var air_lvsr = [48.0, 1.0, 48.0, 0.0, 48.0, 44.0, 46.0, 7.0, 1.0];
+			var air_rvsr = [10.0, 2.0, 1.0, 0.0, 3.0, 37.0, 39.0, 48.0, 49.0];
+			var num_air = 9;
+			var multiplier = 150;
+			var tolerance = 1;
+			var experimentcompleteflag = 0;
+			var water_diameters = [2, 4, 6, 8, 10];
+			var water_diameters = [2, 4, 6, 8, 10];
+			var water_diameters = [2, 4, 6, 8, 10];
+			var num_water = 5;
+			var ring_center_x_default = 203;
+			var ring_center_x = 203;
+			var ring_center_y_default = 199;
+			var ring_center_y = 199;
+			var lens_def_x = 0;
+			var lens_def_y = 0;
+			var holder_def_x = 0;
+			var holder_def_y = 0;
+			var bench_def_x = 0;
+			var bench_def_y = 0;
+			var canvastop = document.getElementById("sim_can_1");
+			var canvasmain = document.getElementById("sim_can_2");
+			var canvasscale = document.getElementById("sim_can_3");
+			var contexttop = canvastop.getContext("2d");
+			var contextmain = canvasmain.getContext("2d");
+			var contextscale = canvasscale.getContext("2d");
+			function getUrlVars() {
+				var vars = {};
+				var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+					vars[key] = value;
+				});
+				return vars;
+			}
+			function addtotable(){
+				addedvaluecount += 1;
+				for(i = 0; i < num_air; i++){
+					var table_var = document.getElementById("readingstable");
+					var shift = ring_center_x_default - ring_center_x;
+					if(shift < 0){
+						shift = shift*(-1);
+						if(air_diameters[i]*multiplier + tolerance > shift && air_diameters[i]*multiplier - tolerance < shift){
+							
+							document.getElementById("lmsr"+(i+1)).innerHTML = air_rmsr[i];
+							document.getElementById("lvsr"+(i+1)).innerHTML = air_rvsr[i];
+						}
+					}else{						
+						if(air_diameters[i]*multiplier + tolerance > shift && air_diameters[i]*multiplier - tolerance < shift){
+							
+							document.getElementById("rmsr"+(i+1)).innerHTML = air_lmsr[i];
+							document.getElementById("rvsr"+(i+1)).innerHTML = air_lvsr[i];
+						}
+					}
+				}
+			}
+			function generategraph(){
+				//if(addedvaluecount >= 15){
+					for(i = 1; i < 10; i++){
+						var geng1 = /**/air_rmsr[i-1];//parseFloat(document.getElementById("lmsr"+(i)).innerHTML);
+						//var geng1 = /*air_rmsr[i-1];*/parseFloat(document.getElementById("lmsr"+(i)).innerHTML);
+						var geng2 = /**/air_rvsr[i-1];//*/parseFloat(document.getElementById("lvsr"+(i)).innerHTML);
+						//var geng2 = /*air_rvsr[i-1];*/parseFloat(document.getElementById("lvsr"+(i)).innerHTML);
+						var geng3 = /**/air_lmsr[i-1];//*/parseFloat(document.getElementById("rmsr"+(i)).innerHTML);
+						//var geng3 = /*air_lmsr[i-1];*/parseFloat(document.getElementById("rmsr"+(i)).innerHTML);
+						var geng4 = /**/air_lvsr[i-1];//*/parseFloat(document.getElementById("rvsr"+(i)).innerHTML);
+						//var geng4 = /*air_lvsr[i-1];*/parseFloat(document.getElementById("rvsr"+(i)).innerHTML);
+						var geng5 = geng1 + (geng2 * 0.001);
+						var geng6 = geng3 + (geng4 * 0.001);
+						document.getElementById("ltr"+(i)).innerHTML = geng5.toFixed(3);
+						document.getElementById("rtr"+(i)).innerHTML = geng6.toFixed(3);
+						var gdiameter = geng6 - geng5;
+						document.getElementById("diameter"+(i)).innerHTML = gdiameter.toFixed(3);
+						var gdsquare = Math.pow(gdiameter, 2);
+						document.getElementById("dsquare"+(i)).innerHTML = gdsquare.toFixed(3);
+						document.getElementById("difference"+(i)).innerHTML = gdiameter.toFixed(3);
+						datapoints.push({ x: i, y: gdiameter });
+					}
+					plotgraph();
+					calculatewavelength();
+				//}else{
+					//alert("Please add all values");
+				//}
+			}
+			function calculatewavelength(){
+				var dnmt = 0;
+				for(i = air_diameters.length - 1; i > 1; i--){
+					var dn2 = Math.pow(air_diameters[i], 2);
+					var dm2 = Math.pow(air_diameters[i-1], 2);
+					var dmn = (dn2 - dm2)/400;
+					dnmt += dmn;
+				}
+				var wavelength = (dnmt / air_diameters.length) * Math.pow(10, 8);
+				document.getElementById("wavelengthcolumn").innerHTML = "Wavelength : " + wavelength.toFixed(0) + " . 10<sup>-8</sup>cms";
+			}
+			function plotgraph(){
+				makegraph();
+				drawgraph("grapharea", datapoints2, "Rings", "Diameter");
+			}
+			function makegraph(){
+				var meandifference = 0;
+				var thisone = 0, previousone = 0, smallmaxdifference = 0;
+				var positivedifference = 0, negativedifference = 0;
+				for(temp = 0; temp < (datapoints.length - 1); temp++){
+					var difference = datapoints[temp + 1]['y'] - datapoints[temp]['y'];
+					meandifference += difference;
+				}
+				meandifference = meandifference / datapoints.length;
+				for(temp = 0; temp < (datapoints.length - 1); temp++){
+					var y1 = datapoints[temp]['y'];
+					var y2 = datapoints[0]['y'] + (meandifference * temp);
+					var difference = y2 - y1;
+					if(difference >= 0){
+						if(Math.abs(difference) > Math.abs(positivedifference)){
+							positivedifference = difference;
+						}
+					}else{
+						if(Math.abs(difference) > Math.abs(negativedifference)){
+							negativedifference = difference;
+						}
+					}
+				}
+				if(Math.abs(positivedifference) > Math.abs(negativedifference)){
+					while(Math.abs(positivedifference) > Math.abs(negativedifference)){
+						meandifference -= 0.0001
+						positivedifference = 0;
+						negativedifference = 0;
+						for(temp = 0; temp < (datapoints.length - 1); temp++){
+							
+							var y1 = datapoints[temp]['y'];
+							var y2 = datapoints[0]['y'] + (meandifference * temp);
+							var difference = y2 - y1;
+							if(difference >= 0){
+								if(Math.abs(difference) > Math.abs(positivedifference)){
+									positivedifference = difference;
+								}
+							}else{
+								if(Math.abs(difference) > Math.abs(negativedifference)){
+									negativedifference = difference;
+								}
+							}
+						}
+					}
+				}else{
+					while(Math.abs(positivedifference) < Math.abs(negativedifference)){
+						meandifference += 0.0001
+						positivedifference = 0;
+						negativedifference = 0;
+						for(temp = 0; temp < (datapoints.length - 1); temp++){
+							var y1 = datapoints[temp]['y'];
+							var y2 = datapoints[0]['y'] + (meandifference * temp);
+							var difference = y2 - y1;
+							if(difference >= 0){
+								if(Math.abs(difference) > Math.abs(positivedifference)){
+									positivedifference = difference;
+								}
+							}else{
+								if(Math.abs(difference) > Math.abs(negativedifference)){
+									negativedifference = difference;
+								}
+							}
+						}
+					}
+				}
+				for(temp = 0; temp < datapoints.length; temp++){
+					datapoints2.push({x:temp, y:(datapoints[0]['y'] + (temp * meandifference))});
+				}
+			}
+			function ringfunction(){
+				var contexttopsub = canvastop.getContext("2d");
+				var medium = getUrlVars()["medium"];
+				if(medium == 1){
+					for(i = 0; i < num_air; i++){
+						var radius = air_diameters[i] * multiplier;						
+						contexttopsub.beginPath();
+						contexttopsub.arc(ring_center_x, ring_center_y, radius, 0, 2 * Math.PI, true);
+						contexttopsub.strokeStyle = "yellow";
+						contexttopsub.lineWidth = 4 - i/3;
+						contexttopsub.stroke();
+					}
+				}else if(medium == 2){
+					contexttopsub.beginPath();
+					contexttopsub.arc(ring_center_x, ring_center_y, 5, 0, 2 * Math.PI, true);
+					contexttopsub.lineWidth = 4;
+					contexttopsub.stroke();
+					
+				}
+			}
+			function addtoscales(){
+				for(i = 0; i < num_air; i++){
+					var shift = ring_center_x_default - ring_center_x;
+					if(shift < 0){		
+						shift = shift*-1;
+						if(air_diameters[i]*multiplier + tolerance > shift && air_diameters[i]*multiplier - tolerance < shift){
+							document.getElementById("digital_vernier").value = air_rvsr[i];
+							document.getElementById("digital_main_scale").value = air_rmsr[i];
+						}
+					}else{						
+						if(air_diameters[i]*multiplier + tolerance > shift && air_diameters[i]*multiplier - tolerance < shift){
+							document.getElementById("digital_vernier").value = air_lvsr[i];
+							document.getElementById("digital_main_scale").value = air_lmsr[i];
+						}
+					}
+				}
+			}
+			function showapparatus(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				var contextscalesub = canvasscale.getContext("2d");
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				contextscalesub.clearRect(0, 0, canvasscale.width, canvasscale.height);
+				contexttopsub.drawImage(document.getElementById("black_stage"), 0, 0);
+				ringfunction();
+				contexttopsub.drawImage(document.getElementById("mscope_lens_top"), 0, 0);
+				contextmainsub.drawImage(document.getElementById("mscope_lens"), lens_def_x, lens_def_y);
+				contextmainsub.drawImage(document.getElementById("mscope_holder"), holder_def_x, holder_def_y);
+				contextmainsub.drawImage(document.getElementById("mscope_bench"), bench_def_x, bench_def_y);
+				showscale();
+				document.getElementById("digital_vernier").value = 0;
+				document.getElementById("digital_main_scale").value = 10;
+			}
+			function showscale(){
+				var contextscalesub = canvasscale.getContext("2d");
+				contextscalesub.drawImage(document.getElementById("scale"), 100, 0);
+				var Q = "Main Scale";
+				contextscalesub.font = "20px Arial";
+				contextscalesub.fillText(Q, 0, 25);
+			}
+			function goleft(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				ring_center_x += 2;
+				lens_def_x += 1;
+				holder_def_x += 1;
+				showapparatus();
+				addtoscales();
+			}
+			function goright(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				ring_center_x -= 2;
+				lens_def_x -= 1;
+				holder_def_x -= 1;
+				showapparatus();
+				addtoscales();
+			}
+			function goup(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				if(lens_def_y > -35){
+					lens_def_y -= 5;
+					multiplier -= 1;
+					//tolerance -= 1;
+				}else{
+					alert("Lens cannot be further moved up");
+				}
+				showapparatus();
+			}
+			function godown(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				if(lens_def_y < 30){
+					lens_def_y += 5;
+					multiplier += 1;
+					//tolerance += 1;
+				}else{
+					alert("Lens cannot be further moved down");
+				}
+				showapparatus();
+			}
+			function resetmicroscope(){
+				var contexttopsub = canvastop.getContext("2d");
+				var contextmainsub = canvasmain.getContext("2d");
+				ring_center_x_default = 203;
+				ring_center_x = 203;
+				ring_center_y_default = 199;
+				ring_center_y = 199;
+				lens_def_x = 0;
+				lens_def_y = 0;
+				holder_def_x = 0;
+				holder_def_y = 0;
+				contexttopsub.clearRect(0, 0, canvastop.width, canvastop.height);
+				contextmainsub.clearRect(0, 0, canvasmain.width, canvasmain.height);
+				showapparatus();
+			}
+		</script>
+	</body>
+</html>

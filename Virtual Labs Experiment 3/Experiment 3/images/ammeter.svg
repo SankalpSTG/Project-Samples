@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="47.625mm"
+   height="47.625mm"
+   viewBox="0 0 47.625 47.625"
+   version="1.1"
+   id="svg1572"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="ammeter.svg">
+  <defs
+     id="defs1566" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.69149735"
+     inkscape:cx="-188.28973"
+     inkscape:cy="143.13682"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="715"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata1569">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-62.270664,-112.64302)">
+    <rect
+       style="fill:#333333;stroke:#ffffff;stroke-width:0.14117542;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect2117"
+       width="47.483826"
+       height="47.483826"
+       x="62.341251"
+       y="112.71361"
+       ry="9.3271799" />
+    <rect
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0.1261099;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect2121"
+       width="39.56139"
+       height="23.68639"
+       x="66.302475"
+       y="118.37069"
+       ry="5.752408" />
+    <circle
+       style="fill:#37abc8;stroke:#ffffff;stroke-width:0.21799999;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path2123"
+       cx="79.148216"
+       cy="148.75774"
+       r="0" />
+    <circle
+       style="fill:#000000;stroke:#ffffff;stroke-width:0.14606221;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path2143"
+       cx="79.148216"
+       cy="148.75774"
+       r="0" />
+    <circle
+       style="fill:#37abc8;stroke:#ffffff;stroke-width:0.21799999;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path2123-9"
+       cx="109.27292"
+       cy="148.75774"
+       r="0" />
+    <circle
+       style="fill:#000000;stroke:#ffffff;stroke-width:0.14606223;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path2143-3"
+       cx="109.27292"
+       cy="148.75774"
+       r="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:7.93749952px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.19843748"
+       x="79.201797"
+       y="154.7733"
+       id="text2169"><tspan
+         sodipodi:role="line"
+         id="tspan2167"
+         x="79.201797"
+         y="154.7733"
+         style="fill:#ffffff;stroke-width:0.19843748">mA</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:7.93749952px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.19843748"
+       x="78.042953"
+       y="116.28345"
+       id="text2173"><tspan
+         sodipodi:role="line"
+         id="tspan2171"
+         x="78.042953"
+         y="116.28345"
+         style="font-size:2.64583325px;fill:#ffffff;stroke-width:0.19843748">Toksha Labs</tspan></text>
+    <ellipse
+       style="fill:#008080;stroke:#ffffff;stroke-width:0.1635;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path825"
+       cx="72.058716"
+       cy="151.39523"
+       rx="3.96875"
+       ry="3.9687498" />
+    <circle
+       style="fill:#ff0000;stroke:#ffffff;stroke-width:0.1635;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path846"
+       cx="72.058716"
+       cy="151.39523"
+       r="1.7859374" />
+    <ellipse
+       style="fill:#008080;stroke:#ffffff;stroke-width:0.1635;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path825-3"
+       cx="100.52934"
+       cy="151.39523"
+       rx="3.96875"
+       ry="3.9687498" />
+    <circle
+       style="fill:#000000;stroke:#ffffff;stroke-width:0.1635;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path846-1"
+       cx="100.52934"
+       cy="151.39523"
+       r="1.7859374" />
+    <path
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0.89803267px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 79.997239,155.9485 12.171849,-2.4e-4"
+       id="path826"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>
